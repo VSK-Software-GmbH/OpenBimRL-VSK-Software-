@@ -33,7 +33,7 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
     	<attribute name="name" type="string"></attribute>
     	<attribute name="value" type="string"></attribute>
     </complexType>
-	
+
     <complexType name="NodeType">
     	<sequence>
     		<element name="Description" type="string" maxOccurs="1"
@@ -59,12 +59,12 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
     		</element>
     	</sequence>
     	<attribute name="id" type="string" use="required"></attribute>
-    	<attribute name="function" type="string"></attribute>
+    	<attribute name="function" type="string" use="required"></attribute>
     	<attribute name="alias" type="string"></attribute>
     	<attribute name="xPos" type="int"></attribute>
     	<attribute name="yPos" type="int"></attribute>
     </complexType>
-	
+
 	<complexType name="GroupType">
     	<sequence>
     		<element name="children" type="string" maxOccurs="unbounded" minOccurs="1"></element>
@@ -73,7 +73,7 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
     	<attribute name="label" type="string" use="required"></attribute>
     	<attribute name="color" type="string" use="required"></attribute>
     </complexType>
-	
+
     <complexType name="BIMRuleType">
     	<sequence>
     		<element name="Precalculations"
