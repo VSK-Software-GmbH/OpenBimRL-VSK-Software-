@@ -70,13 +70,10 @@ The root element of OpenBIMRL is the OpenBIMRL component. The component nests a 
     xmlns="http://inf.bi.rub.de/OpenBimRL" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://github.com/RUB-Informatik-im-Bauwesen/OpenBimRL/blob/main/schema/OpenBimRL_Extension.xsd">
-
-    <BIMRule ...> ... </BIMRule>
-    <BIMRule ...> ... </BIMRule>
-    ...
-
+	    <BIMRule ...> ... </BIMRule>
+	    <BIMRule ...> ... </BIMRule>
+	    ...
 </OpenBIMRL>
-
 ```
 
 | Namespace | URI | 
@@ -96,9 +93,7 @@ The main component of an OpenBimRL verification rule is called _BIMRule_, which 
 **Translated as XML instance:**
 ```
 <BIMRule name="Checking primary Escape Route">
-
     ...
-
 </BIMRule>
 ```
 
@@ -108,22 +103,16 @@ The precalculations contain a graph with functions (as nodes) and a connection b
 **Translated as XML instance:**
 ```
 <BIMRule ...>
-
     <!-- Precalculations contain a graph for pre-calculating subsets and results for the exam. -->
     <Precalculations>
-
         <Node> ... </Node>
         <Node> ... </Node>
         <Node> ... </Node>
-
         <Edge ... />
         <Edge ... />
         <Edge ... />
-
     </Precalculations>
-
     ...
-
 </BIMRule>
 ```
 
@@ -189,7 +178,7 @@ An edge always connects an output of a node (function) with the input of another
     targetHandle="3"/>
 ```
 
-##### 2.2.3 Groups (Node nesting)
+##### 2.2.3 Groups
 A _Group_ nests elements from the graph of the precalculation (_Precalculation_ component) and represents them in the common context. This grouping is thereby a descriptive object, in that it refers directly to the components of the graphs and additionally names them.
 
 | Element.Attribut | Description | Example |
@@ -206,6 +195,49 @@ A _Group_ nests elements from the graph of the precalculation (_Precalculation_ 
     <children>f3d898d8-b958-3d79-084c-cce953f4b168</children>
     ...
 </Group>
+```
+
+
+##### 2.2.4 Cluster (Node nesting)
+
+A cluster nests SubGraphs and thus allows several graphs of the precalculation to be logically linked together. Clusters behave almost identically to normal function nodes, but with the essential difference that their calculation is based on a SubGraph. The _input_ and _output_ elements of a cluster are defined and controlled via the _ClusterInput_ and _ClusterOutput_ nodes contained in the SubGraph. These _ClusterInput_ and _ClusterOutput_ nodes are only permitted within clusters and have a strict specification as to how their id is to be named so that they can be assigned to the corresponding _input_ and _output_ elements of a cluster.
+
+| Element.Attribut | Description | Example |
+| ---      | ---          | ---      |
+| Cluster.label | Naming, or description of the clusters. | "Sub-Rountine of ..." |
+| Cluster.id | Unique identifier of the group node (UUID). | bc2a7431-9376-db5d-a12a-fdb5d83bddbh |
+| Cluster.color | The base color of the group in Hexerdeximal notation. | #fcba03 |
+| Cluster.subGraph | A list of nodes, edges, groups and clusters (graph of the cluster).  | [ <Node ... />, <Node ... />, ..., <Edge ... />] |
+
+The id of a _ClusterInput_ and _ClusterOutput_ node is derived from the id of the cluster itself. An indication of the referenced input or output of the node is appended to the id as a post-fix. Accordingly, the form of the id must be constructed according to the following pattern:
+
+_clusterInput.id = cluster.id + '_I_' + inputIndex_
+_clusterOutput.id = cluster.id + '_O_' + outputIndex_
+
+
+**Translated as XML instance:**
+```
+<Cluster id="c303da93-c6be-4f5a-be63-8ee3502cd268" label="A clustered SubGraph" color="#00D9FF" xPos="1996" yPos="1187">
+    <Inputs>
+        <ClusterInput name="In[0]"/>
+        <ClusterInput name="In[1]"/>
+    </Inputs>
+    <Outputs>
+        <ClusterOutput name="Out[0]"/>
+    </Outputs>
+    <SubGraph>
+        <Node id="c303da93-c6be-4f5a-be63-8ee3502cd268_I_0" function="input.clusterInput" alias="In[0]" xPos="1453" yPos="1120">
+            <Outputs> <Output name="In[0]"/> </Outputs>
+        </Node>
+        <Node id="c303da93-c6be-4f5a-be63-8ee3502cd268_I_1" function="input.clusterInput" alias="In[1]" xPos="1453" yPos="1220">
+            <Outputs> <Output name="In[0]"/> </Outputs>
+        </Node>
+        <Node id="c303da93-c6be-4f5a-be63-8ee3502cd268_O_0" function="input.clusterOutput" alias="Out[0]" xPos="2874" yPos="1120">
+            <Inputs>  <Input name="Out[0]"/> </Inputs>
+        </Node>
+        ...
+    </SubGraph>
+</Cluster>
 ```
 
 

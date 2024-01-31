@@ -71,13 +71,10 @@ Das Root-Element von OpenBIMRL ist die OpenBIMRL-Komponente. Die Komponente Scha
     xmlns="http://inf.bi.rub.de/OpenBimRL" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://github.com/RUB-Informatik-im-Bauwesen/OpenBimRL/blob/main/schema/OpenBimRL_Extension.xsd">
-
-    <BIMRule ...> ... </BIMRule>
-    <BIMRule ...> ... </BIMRule>
-    ...
-
+	    <BIMRule ...> ... </BIMRule>
+	    <BIMRule ...> ... </BIMRule>
+	    ...
 </OpenBIMRL>
-
 ```
 
 | Namespace | URI | 
@@ -97,9 +94,7 @@ Die Hauptkomponente einer OpenBimRL Prüfregel nennt sich _BIMRule_, welche das 
 **Übersetzt als XML-Instanz:**
 ```
 <BIMRule name="Checking primary Escape Route">
-
     ...
-
 </BIMRule>
 ```
 
@@ -109,22 +104,16 @@ Die Vorberechnungen enthalten einen Graphen mit Funktionen (als Knoten) und eine
 **Übersetzt als XML-Instanz:**
 ```
 <BIMRule ...>
-
     <!-- Precalculations enthalten einen Graphen zur Vorberechnung von Teilmengen und Ergebnissen für die Prüfung. -->
     <Precalculations>
-
         <Node> ... </Node>
         <Node> ... </Node>
         <Node> ... </Node>
-
         <Edge ... />
         <Edge ... />
         <Edge ... />
-
     </Precalculations>
-
     ...
-
 </BIMRule>
 ```
 
@@ -190,8 +179,8 @@ Eine Kante verbindet immer einen Ausgang eines Knotens (Funktion) mit dem Eingan
 ```
 
 
-##### 2.2.3 Gruppen (Verschachteln von Knoten)
-Eine _Group_ verschachtelt Elemente aus dem Graphen der Vorberechnung (_Precalculation_-Komponente) und stellt diese im gemeinsamen Kontext dar. Diese Gruppierung ist dabei ein beschreibendes Objekt, indem es direkt auf die Komponenten der Graphen verweist und diese zusätzlich benennt.  
+##### 2.2.3 Gruppen
+Eine _Group_ beschreibt und vernetzt Elemente aus dem Graphen der Vorberechnung (_Precalculation_-Komponente) und stellt diese im gemeinsamen Kontext dar. Diese Gruppierung ist dabei ein rein beschreibendes Objekt, indem es direkt auf die Komponenten der Graphen verweist und diese zusätzlich benennt.  
 
 | Element.Attribut | Beschreibung | Beispiel |
 | ---      | ---          | ---      |
@@ -208,6 +197,49 @@ Eine _Group_ verschachtelt Elemente aus dem Graphen der Vorberechnung (_Precalcu
     ...
 </Group>
 ```
+
+##### 2.2.4 Kluster (Verschachteln von Knoten)
+
+Ein Kluster verschachtelt SubGraphen und erlaubt es so mehrere graphen der Vorberechnung miteinander logisch zuverbinden. Dabei verhalten sich Kluster nahezu identisch zu normalen Funktions-Knoten, jedoch mit dem wesentlichen unterschied, dass deren Berrechnung auf einem SubGraphen basiert. Die _input_ und _output-Elemente_ eines Klusters sind über die im SubGraphen enthaltenen _ClusterInput-_ und _ClusterOutput-Knoten_ definiert und gesteuert. Diese _ClusterInput-_ und _ClusterOutput-Knoten_ sind nur innerhalb von Klustern erlaubt und haben eine strikte vorgabe, wie deren id zu bennen sind, damit diese den entsprechenden  _input_ und _output-Elemente_ eines Klusters zugeordnet werden können.
+
+| Element.Attribut | Beschreibung | Beispiel |
+| ---      | ---          | ---      |
+| Cluster.label | Benennung, bzw. Beschreibung des Klusters. | "Sub-Rountine of ..." |
+| Cluster.id | Eindeutiger Identifier des ausgehenden referenzierten Knotens (UUID). | bc2a7431-9376-db5d-a12a-fdb5d83bddbh |
+| Cluster.color | Die Grundfarbe des Klusters in Hexerdeximal-Schreibweise. | #fcba03 |
+| Cluster.subGraph | Eine liste von Knoten, Kanten, Gruppen und Kluster (Graph des Klusters). | [ <Node ... />, <Node ... />, ..., <Edge ... />] |
+
+Die id eines _ClusterInput-_ und _ClusterOutput-Knoten_ wird durch die id des clusters selbst abgeleitet. Als post-fix wird ein Hinweis der id angehangen, um welchen refernzierten input oder output es sich bei dem Knoten handelt. Demnach ist die Form des id nach folgendem schema zu konstruieren:
+
+_clusterInput.id = cluster.id + '_I_' + inputIndex_
+_clusterOutput.id = cluster.id + '_O_' + outputIndex_
+
+
+**Übersetzt als XML-Instanz:**
+```
+<Cluster id="c303da93-c6be-4f5a-be63-8ee3502cd268" label="A clustered SubGraph" color="#00D9FF" xPos="1996" yPos="1187">
+    <Inputs>
+        <ClusterInput name="In[0]"/>
+        <ClusterInput name="In[1]"/>
+    </Inputs>
+    <Outputs>
+        <ClusterOutput name="Out[0]"/>
+    </Outputs>
+    <SubGraph>
+        <Node id="c303da93-c6be-4f5a-be63-8ee3502cd268_I_0" function="input.clusterInput" alias="In[0]" xPos="1453" yPos="1120">
+            <Outputs> <Output name="In[0]"/> </Outputs>
+        </Node>
+        <Node id="c303da93-c6be-4f5a-be63-8ee3502cd268_I_1" function="input.clusterInput" alias="In[1]" xPos="1453" yPos="1220">
+            <Outputs> <Output name="In[0]"/> </Outputs>
+        </Node>
+        <Node id="c303da93-c6be-4f5a-be63-8ee3502cd268_O_0" function="input.clusterOutput" alias="Out[0]" xPos="2874" yPos="1120">
+            <Inputs>  <Input name="Out[0]"/> </Inputs>
+        </Node>
+        ...
+    </SubGraph>
+</Cluster>
+```
+
 
 ### 2.3 ModelCheck (Modellprüfung)
 Die _ModelCheck_-Komponente fasst alle Bedingungen und Erwartungswerte der Prüfregel zusammen. Die _ModelCheck_-Komponente selbst definiert über das Attribut _name_ eine eindeutige und beschreibende Bezeichnung der Prüfregel. Ein ModelCheck setzt sich wiederum aus drei Sub-Komponenten zusammen, namentlich den _RuleIdentifier_, _ModelSubCheck_ und _ResultSet_.
