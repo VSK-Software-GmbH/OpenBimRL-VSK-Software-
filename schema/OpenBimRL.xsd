@@ -120,6 +120,15 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
     		<element name="ModelCheck" type="tns:ModelCheckType"
     			maxOccurs="1" minOccurs="1">
     		</element>
+    		<element name="uuid">
+		        <simpleType>
+		            <restriction base="ID">
+		                <pattern
+		                    value="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}">
+		                </pattern>
+		            </restriction>
+		        </simpleType>
+    		</element>
     	</sequence>
     	<attribute name="name" type="string" use="required"></attribute>
     </complexType>
@@ -249,4 +258,5 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
     	<attribute name="target" type="string"></attribute>
     	<attribute name="targetHandle" type="int"></attribute>
     </complexType>
+
 </schema>
