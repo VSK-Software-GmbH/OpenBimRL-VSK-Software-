@@ -1,4 +1,36 @@
-# OpenBimRL
+# OpenBimRL – VSK Software Fork
+
+Dieses Repository ist ein Fork von
+[RUB-Informatik-im-Bauwesen/OpenBimRL](https://github.com/RUB-Informatik-im-Bauwesen/OpenBimRL).
+
+Es wird von VSK Software GmbH gepflegt, um Änderungen und Erweiterungen
+nachzuverfolgen, die im Zusammenhang mit dem produktiven Einsatz von
+OpenBimRL in Produkten von VSK Software GmbH entwickelt werden, und um
+Beiträge zum OpenBimRL-Projekt zu erleichtern.
+
+## Ursprung
+
+OpenBimRL wurde ursprünglich am Lehrstuhl für Informatik im Bauwesen
+der Ruhr-Universität Bochum entwickelt.
+
+Ursprüngliche Autoren:
+- Marcel Stepien
+- André Vonthron
+
+## Lizenz
+
+Dieses Repository enthält Bestandteile, die unter unterschiedlichen
+Lizenzen veröffentlicht wurden:
+
+- Java-Quellcode: MIT-Lizenz
+- OpenBimRL-XSD-Schema: Creative Commons Namensnennung 4.0
+  International (CC BY 4.0)
+- Änderungen und zusätzliche Software von VSK Software:
+  siehe die jeweiligen Quelldateien und `LICENSE.txt`
+
+Weitere Informationen sind in `LICENSE.txt` und `NOTICE.md` enthalten.
+
+# OpenBimRL (Original-Bereich)
 
 > **Schema:** XSD <br>
 > **Current Version:** 2023.07.1 <br>
