@@ -1,6 +1,22 @@
-## Structure of the scheme and components
+## Schema structure and its components
 
-![OpenBimRL Konzeptgrafik](images/OpenBimRL-Konzeptgrafik.png "Konzeptgrafik")
+The schema contains different Subcomponents, which are described
+by the subsequent section:
+
+1. [OpenBIMRL-Root-Element](#1-openbimrl-root-element)
+    - [1.1 Bim rule](#11-bim-rule)
+        - [1.1.1 Precalculations](#111-precalculations)
+            - [1.1.1.1 Nodes](#1111-nodes)
+            - [1.1.1.2 Edges](#1112-edges)
+            - [1.1.1.3 Groups](#1113-groups)
+        - [1.1.2 Model check](#112-model-check)
+            - [1.1.2.1 Rule identifier](#1121-ruleidentifier)
+            - [1.1.2.2 Model subcheck](#1122-model-subcheck)
+            - [1.1.2.3 Result set](#1123-result-set)
+2. [Terms and definitions](#2-terms-and-definitions)
+
+
+![OpenBimRL concept figure](images/OpenBimRL-Konzeptgrafik.png "Concept figure")
 
 > The OpenBimRL concept is made up of several building blocks, which forms the general structure the schema.
 
@@ -33,7 +49,7 @@ The root element of OpenBIMRL is the OpenBIMRL component. The component nests a 
 | xsi   | http://www.w3.org/2001/XMLSchema-instance |
 | schemaLocation   | https://github.com/RUB-Informatik-im-Bauwesen/OpenBimRL/blob/main/schema/OpenBimRL.xsd |
 
-### 1.1 OpenBimRL Schema
+### 1.1 BIM-Rule
 The main component of an OpenBimRL verification rule is called _BIMRule_, which specifies the format of the rule. It is the enclosing element in the verification document. The following information must be given as a minimum:
 
 | Element.Attribut | Description | Example |
@@ -50,7 +66,7 @@ The main component of an OpenBimRL verification rule is called _BIMRule_, which 
 </BIMRule>
 ```
 
-#### 1.2 Precalculations
+#### 1.1.1 Precalculations
 The precalculations contain a graph with functions (as nodes) and a connection between inputs and outputs (as edges). The graph represents a process and/or algorithm, whose partial results can be stored temporarily for use in rules for model checking.
 
 **Translated as XML instance:**
@@ -75,7 +91,7 @@ The precalculations contain a graph with functions (as nodes) and a connection b
 </BIMRule>
 ```
 
-##### 1.2.1 Nodes (functions)
+##### 1.1.1.1 Nodes
 
 Each node element contains _input_ and _output_ elements. Their attributes describe how many inputs and outputs are present and how they are named. However, inputs and outputs are only optional. A non-existence of these means that there are no inputs or outputs for this node. A node is therefore defined as follows:
 
@@ -115,7 +131,7 @@ Each node element contains _input_ and _output_ elements. Their attributes descr
 </Node>
 ```
 
-##### 1.2.2 Edges ( connections/relations)
+##### 1.1.1.2 Edges
 
 An edge always connects an output of a node (function) with the input of another node (function). No cycles may occur here! **The graph is only valid for directed non-cyclic definitions.** An edge is defined as follows:
 
@@ -137,7 +153,7 @@ An edge always connects an output of a node (function) with the input of another
     targetHandle="3"/>
 ```
 
-##### 1.2.3 Groups (Node nesting)
+##### 1.1.1.3 Groups
 A _Group_ nests elements from the graph of the precalculation (_Precalculation_ component) and represents them in the common context. This grouping is thereby a descriptive object, in that it refers directly to the components of the graphs and additionally names them.
 
 | Element.Attribut | Description | Example |
@@ -157,7 +173,7 @@ A _Group_ nests elements from the graph of the precalculation (_Precalculation_ 
 ```
 
 
-### 2.3 ModelCheck (model test)
+### 1.1.2 Model Check
 The _ModelCheck_ component summarises all conditions and expected values of the checking rule. The _ModelCheck_ component itself defines a unique and descriptive name of the checking rule via the _name_ attribute. A ModelCheck is composed of three sub-components, namely the _RuleIdentifier_, _ModelSubCheck_ and _ResultSet_.
 
 **Translated as XML instance:**
@@ -189,7 +205,7 @@ The _ModelCheck_ component summarises all conditions and expected values of the 
 </tns:BIMRule>
 ```
 
-##### 2.3.1 RuleIdentifier for linking the check to the precalculation
+##### 1.1.2.1 RuleIdentifier
 A _RuleIdentifier_ establishes a connection between the graph of the precalculation (_Precalculation_ component) and the rules applied to it. A _RuleIdentifier_ temporarily stores a calculated result from the graph in order to examine it in more detail linked by conditions. Accordingly, the source must be specified for a _RuleIdentifier_, explicit to the selected output.
 
 | Element.Attribut | Description | Example |
@@ -198,7 +214,7 @@ A _RuleIdentifier_ establishes a connection between the graph of the precalculat
 | RuleIdentifier.source | Unique identifier of the outgoing referenced node (UUID). | bc2a7431-9376-db5d-a12a-fe48e83bddbd |
 | RuleIdentifier.sourceHandle | Number of the addressed output, starting with 0. | 0 |
 
-##### 2.3.2 ModelSubCheck for nesting multiple rules and conditions
+##### 1.1.2.2 Model subcheck
 A _ModelSubCheck_ summarises a group of individual requirements and allows them to be evaluated as a single test. The sub-check can be given a name separate from the main check via the _label_ attribute. Such a _ModelSubCheck_ consists of two main parts, _Applicability_ and _Rules_.
 
 The _Applicability_ is an optional component which itself contains a cascade of _Rules_ and _Rule_ components. The _Applicability_ can be used to apply a filter prior to rule checking. Only a set of valid elements are processed in the rule checking.
@@ -214,7 +230,7 @@ The rules and rule components are a cascading structure of grouped conditions. I
 | Rule.operator2 | A static value to be checked against. | feuerbeständig |
 | Rule2.operator | The operator to be used for Boolean operations, for linking the partial results. | or, and, xor |
 
-##### 2.3.3 ResultSet for the representation of expected partial results
+##### 1.1.2.3 Result Set
 A _ResultSet_ allows elements from the pre-calculation to be filtered with partial results of the check, creating views (Model Views) on successfully and unsuccessfully checked elements. This is made possible by applying filter masks to a set of testable elements. A _ResultSet_ requires three attributes for definition, which are a _name_, _elements_ and _filter_.
 
 | Element.Attribut | Description | Example |
@@ -223,7 +239,7 @@ A _ResultSet_ allows elements from the pre-calculation to be filtered with parti
 | ResultSet.elements | The list of testable elements from the precalculation. | ifcWallEntities |
 | ResultSet.filter | The reference to the applicable filter mask from the test procedure. | filterMaskA |
 
-## 3. Terms and definitions
+## 2. Terms and definitions
 
 **Query language** is a language construct derived from logic and grammatics, which forms the basis for declarative programming. In a query language, relationships of information are mapped and their conclusions are derived according to available facts. A query operates on a data basis (database). Its execution generates subsets (views, selections) of objects and information from the data basis.
 
